@@ -150,11 +150,11 @@ having
 
 
 
+
 /*Вывести клиентов (ID, имя, фамилия, сфера деятельности) из сфер IT или Health,
 которые совершили не менее 3 подтвержденных заказов в период 2017-01-01 по 2017-03-01,
 и при этом их общий доход от этих заказов превышает 10 000 долларов.
 Разделить вывод на две группы (IT и Health) с помощью UNION.*/
--- ГРУППА IT
 select
     c.customer_id,
     c.first_name,
@@ -168,8 +168,8 @@ join order_item_id oi
 where
     c.job_industry_category = 'IT'
     and o.order_status = 'Approved'
-    and o.order_date >= '2017-01-01'
-    and o.order_date <= '2017-03-01'
+    and o.order_date >= '2017-01-01'::date
+    and o.order_date <= '2017-03-01'::date
 group by
     c.customer_id, c.first_name, c.last_name, c.job_industry_category
 having
@@ -178,7 +178,6 @@ having
 
 union
 
--- ГРУППА Health
 select
     c.customer_id,
     c.first_name,
@@ -192,13 +191,14 @@ join order_item_id oi
 where
     c.job_industry_category = 'Health'
     and o.order_status = 'Approved'
-    and o.order_date >= '2017-01-01'
-    and o.order_date <= '2017-03-01'
+    and o.order_date >= '2017-01-01'::date
+    and o.order_date <= '2017-03-01'::date
 group by
     c.customer_id, c.first_name, c.last_name, c.job_industry_category
 having
     count(distinct o.order_id) >= 3
     and sum(oi.item_list_price_at_sale) > 10000;
+
 
 
 
